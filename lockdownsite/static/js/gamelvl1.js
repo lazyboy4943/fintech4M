@@ -3,8 +3,47 @@ var map = document.querySelector(".map");
 var noteonwall = document.getElementById('noteonwall')
 var jumpoff = document.getElementById('jumpoff')
 var door = document.getElementById('door')
+var subtitle1 = document.getElementById('subtitle1')
+var subtitle2 = document.getElementById('subtitle2')
+var subtitle3 = document.getElementById('subtitle3')
+var subtitle4 = document.getElementById('subtitle4')
+
 
 console.log('it works 1')
+subtitle1.style.display = 'inline';
+subtitle2.style.display = 'none';
+subtitle3.style.display = 'none';
+subtitle4.style.display = 'none';
+
+function gotosubtitle2() {
+   subtitle1.style.display = 'none';
+   subtitle2.style.display = 'inline';
+   subtitle3.style.display = 'none';
+   subtitle4.style.display = 'none';
+}
+
+function gotosubtitle3() {
+   subtitle1.style.display = 'none';
+   subtitle2.style.display = 'none';
+   subtitle3.style.display = 'inline';
+   subtitle4.style.display = 'none';
+}
+
+function gotosubtitle4() {
+   subtitle1.style.display = 'none';
+   subtitle2.style.display = 'none';
+   subtitle3.style.display = 'none';
+   subtitle4.style.display = 'inline';
+}
+
+function closesubtitle4() {
+   subtitle1.style.display = 'none';
+   subtitle2.style.display = 'none';
+   subtitle3.style.display = 'none';
+   subtitle4.style.display = 'none';
+}
+
+
 
 
 function sleep(milliseconds) {

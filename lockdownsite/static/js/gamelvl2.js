@@ -1,17 +1,19 @@
 var character = document.querySelector(".character");
 var map = document.querySelector(".map");
-var whiteboard = document.getElementById('whiteboard')
-var camera = document.querySelector(".camera")
-var paperonfloor = document.getElementById('paperonfloor')
-var exercise = document.getElementById('exercise')
-var overwhelm = document.getElementById('overwhelm')
-var door = document.getElementById('door')
+var atm = document.getElementById('atm');
+var camera = document.querySelector(".camera");
+var paperonfloor = document.getElementById('paperonfloor');
+var exercise = document.getElementById('exercise');
+var overwhelm = document.getElementById('overwhelm');
+var door = document.getElementById('door');
+var banktable = document.getElementById('banktable');
+var ATMinterface = document.getElementById("ATMinterface");
 console.log('it works 1')
 
 
 //start in the middle of the map
-var x = 235;
-var y = 130;
+var x = 109;
+var y = 105;
 var held_directions = []; //State of which arrow keys we are holding down
 var speed = 1; //How fast the character moves in pixels per frame
 
@@ -52,20 +54,23 @@ const placeCharacter = () => {
       if (held_direction === directions.w) {y -= speed;}
       character.setAttribute("facing", held_direction);
    }
+
+   //debug
+   console.log(x, y)
+
    character.setAttribute("walking", held_direction ? "true" : "false");
    
    //Limits (gives the illusion of walls)
-   var leftLimit = -8;
-   var rightLimit = (16 * 19.5)+8;
-   var topLimit = -8 + 40;
-   var bottomLimit = (16 * 9);
+   var leftLimit = -3;
+   var rightLimit = 226;
+   var topLimit = 20;
+   var bottomLimit = 118;
 
    // if touching door then go outside
-   var buildinglocxhigh = (16 * 16)+8;
-   var buildinglocxlow = (16 * 13)+8;
-   var buildinglocy = -8 + 150;
-   if (x < buildinglocxhigh && y >= buildinglocy && x > buildinglocxlow ) {
-
+   var buildinglocxhigh = 125;
+   var buildinglocxlow = 101;
+   var buildinglocy = 111;
+   if (x < buildinglocxhigh && y >= buildinglocy && x > buildinglocxlow) {
       door.style.display = 'inline'
    } else {
       door.style.display = 'none'
@@ -74,14 +79,14 @@ const placeCharacter = () => {
       //sleep(2000)
    }
 
-   // if touching whiteboard show 
+   // if touching atm show 
    var paperlocxlow = (16 *6)+8;
-   var paperlocxhigh = (16 * 12)+8;
+   var paperlocxhigh = 191;
    var paperlocy = -8 + 40;
    if (x < paperlocxhigh && x > paperlocxlow && y <= paperlocy) {
-      whiteboard.style.display = 'inline'
+      atm.style.display = 'inline'
    } else {
-      whiteboard.style.display = 'none'
+      atm.style.display = 'none'
    }
 
     // if touching paper show 
@@ -113,6 +118,41 @@ const placeCharacter = () => {
    } else {
       overwhelm.style.display = 'none'
    }
+
+
+   // if touching table then dont touch table and show table ui
+   var tablexlow = 51;
+   var tablexhigh = 175;
+   var tableyhigh = 46;
+
+
+   if (x == tablexlow + 2 || x == tablexlow + 1) {
+      if (y < tableyhigh) {
+         x = tablexlow
+      }
+   }
+
+
+   if (x == tablexhigh - 2 || x == tablexhigh -1) {
+      if (y < tableyhigh) {
+         x = tablexhigh
+      }
+   }
+
+   if (y == tableyhigh - 2 || y == tableyhigh - 1) {
+      if (x < tablexhigh) {
+         if (x > tablexlow){
+            y = tableyhigh
+         }
+      }
+   }
+   
+   if (y < tableyhigh + 2 && x < tablexhigh && x > tablexlow) {
+      banktable.style.display = 'inline';
+   } else {
+      banktable.style.display = 'none';
+   }
+   
 
 
    if (x < leftLimit) { x = leftLimit; }

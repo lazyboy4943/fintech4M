@@ -30,12 +30,21 @@
     
     </div>
 
-    <div class="modal" id = "whiteboard">
+    <div class="modal" id = "atm">
         <div class="options">
-            Gym to the left<br>
-            Office to the right<br>
-            <br>Warning! Only visit the scientist if all 5 papers have been found and answered. If not, he might troll you...<br>
-            <button class="btn" onclick="senddata();">Visit Dr. Scietinst!</button>
+            ATM<br>
+            Welcome to the ATM<br>
+            <br>You can do ATM stuff in the ATM<br>
+            <button class="btn" onclick="showATMinterface();">Use ATM!</button>
+         </div>
+    </div>
+
+    <div class="modal" id = "banktable">
+        <div class="options">
+            Bank table<br>
+            Welcome to the Bank<br>
+            <br>You can do Bank stuff in the Bank<br>
+            <button class="btn" onclick="senddata();">Talk to bank dude</button>
          </div>
     </div>
 
@@ -56,6 +65,10 @@
                 </div>
             {% endif %}
         {% endif %}
+    </div>
+
+    <div id="ATMinterface">
+        ATM
     </div>
 
     <div class="modal" id = "exercise">
@@ -114,6 +127,8 @@
     </form>
     <script src="{{url_for('static', filename='js/gamelvl2.js')}}"></script>
     <script>
+        var ATMinterface = document.getElementById("ATMinterface");
+        var atm = document.getElementById('atm');
         function changeval(x, z) {
             let id = "#val" + String(x);
             document.querySelector(id).value = z;
@@ -121,6 +136,11 @@
         }
         function senddata() {
             document.querySelector("#info").submit();
+        }
+        function showATMinterface() {
+            console.log("show ATM");
+            ATMinterface.style.display = "inline";
+            atm.style.display = "none";
         }
     </script>
     

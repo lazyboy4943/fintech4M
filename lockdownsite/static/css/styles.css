@@ -8,19 +8,18 @@ body {
   background-attachment: fixed;
 }
 
-
-
-html, body {
-    margin: 0; 
-    height: 100%;
+html,
+body {
+  margin: 0;
+  height: 100%;
 }
 
 body {
-    background: #9fa7e4;
-    display: flex;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
+  background: #9fa7e4;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
 }
 
 .wrapper {
@@ -111,40 +110,38 @@ body {
 }
 @keyframes fx-mask {
   0% {
-      transform: translateX(-100%) rotate(45deg);
+    transform: translateX(-100%) rotate(45deg);
   }
   100% {
-      transform: translateX(100%) rotate(45deg);
+    transform: translateX(100%) rotate(45deg);
   }
 }
 @keyframes fx-text {
   0% {
-      transform: translateX(0);
-      opacity: 1;
+    transform: translateX(0);
+    opacity: 1;
   }
   100% {
-      transform: translateX(1em);
-      opacity: 0;
+    transform: translateX(1em);
+    opacity: 0;
   }
 }
 @keyframes fx-text-bis {
   0% {
-      transform: translateX(-1em);
-      opacity: 0;
+    transform: translateX(-1em);
+    opacity: 0;
   }
   100% {
-      transform: translateX(0);
-      opacity: 1;
+    transform: translateX(0);
+    opacity: 1;
   }
 }
-
-
 
 html {
   font-size: 18px;
 }
 body {
-  color:black;
+  color: black;
   font-family: "Questrial", sans-serif;
   background-repeat: no-repeat;
   width: 100%;
@@ -177,14 +174,31 @@ body {
   background: white;
   box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
 }
+
+.subtitle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.6rem 3rem;
+  border: 3px solid black;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
 .message {
-  font-size:1.1rem;
+  font-size: 1.1rem;
   margin-bottom: 1.6rem;
   margin-top: 0;
 }
 .btn {
-  color:inherit;
-    font-family:inherit;
+  color: inherit;
+  font-family: inherit;
   font-size: inherit;
   background: white;
   padding: 0.3rem 3.4rem;
