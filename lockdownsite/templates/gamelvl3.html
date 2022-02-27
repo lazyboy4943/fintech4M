@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+<!--
+   see the video tutorial for how this kind of thing works:
+   https://youtu.be/H3Fn33lYuE0
+-->
+{% block extra_files %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gamelvl3.css') }}">
+{% endblock %}
+
+{% block title %}
+    Level 2
+{% endblock %}
+
+{% block body %}
+<div class="frame">
+    <div class="corner_topleft"></div>
+    <div class="corner_topright"></div>
+    <div class="corner_bottomleft"></div>
+    <div class="corner_bottomright"></div>
+
+    <div class="camera">
+        <div class="map pixel-art">
+            <div class="character" facing="down" walking="true">
+                <div class="shadow pixel-art"></div>
+                <div class="character_spritesheet pixel-art"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal" id="escalator">
+    Escalator to level 1 - Bank Teller and ATM! <br><br>
+    <div class="options">
+        <button class="btn" onclick="location.href = '/game/level2'">Go to level 1</button>
+    </div>
+</div>
+
+<div class="modal" id="stocktable">
+    <h2>Stock Exchange!</h2><br>
+    Do you want to look at the stock market? If not, just walk away<br><br>
+    <div class="options">
+        <button class="btn" onclick=showviewstocks()>View stock market</button>
+    </div>
+</div>
+
+<div class="modal" id="cryptotable">
+    <h2>Cryptocurrency Exchange!</h2><br>
+    Do you want to look at the cryptocurrency market? If not, just walk away<br><br>
+    <div class="options">
+        <button class="btn" onclick="showcryptoview()">View cryptocurrency market</button>
+    </div>
+</div>
+
+
+<!-- to look at stocks -->
+<div class="modal" id="stocksUIview" style="overflow:scroll; width: 1200px; height: 600px; display: none;">
+    {% for stock in stocks %}
+        <div class="stock-card" style="width: 30%; margin: 5px;">
+            <h5>{{ stock[0] }}</h5>
+            <h3>{{ stock[1] }}.</h3>
+            <h4>Cost of one share: $ {{ stock[2] }}</h4>
+            <br>
+            <div class="options">
+                <input placeholder="no. of shares" type="number" min="0" id="{{ stock[0] }}"><br>
+            </div>
+            <br>
+            <div class="options">
+                <button class="btn" onclick="buystock('{{ stock[0] }}')">Buy</button>
+            </div>
+            <br>
+            <div class="options">
+                <button class="btn" onclick="sellstock('{{ stock[0] }}')">Sell</button>
+            </div>
+        </div>
+    {% endfor %} 
+</div>
+
+<!-- to buy and sell crypto -->
+<div class="modal" id="cryptoUIview" style="overflow:scroll; width: 1200px; height: 600px; display: none;">
+    {% for crypto in cryptos %}
+        <div class="stock-card" style="width: 30%;">
+            <h5>{{ crypto[0] }}</h5>
+            <h3>{{ crypto[1] }}</h3>
+            <h4>Cost of one share: $ {{ crypto[2] }}</h4>
+            <br>
+            <div class="options">
+                <input placeholder="no. of shares" type="number" min="0"><br>
+            </div>
+            <br>
+            <div class="options">
+                <button class="btn" onclick="buystock('{{ crypto[0] }}')">Buy</button>
+            </div>
+            <br>
+            <div class="options">
+                <button class="btn" onclick="sellstock('{{ crypto[0] }}')">Sell</button>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<form action="/processing" method="post" hidden id="info">
+    <input id="val1" name="val1" value="">
+    <input id="val2" name="val2" value="">
+</form>
+<script src="{{url_for('static', filename='js/gamelvl3.js')}}"></script>
+<script>
+        var ATMinterface = document.getElementById("ATMinterface");
+        var atm = document.getElementById('atm');
+        function changeval(x, z) {
+            let id = "#val" + String(x);
+            document.querySelector(id).value = z;
+            console.log(z);
+        }
+        function senddata() {
+            document.querySelector("#info").submit();
+        }
+
+</script>
+
+{% endblock %}

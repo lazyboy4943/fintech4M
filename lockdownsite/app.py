@@ -1,12 +1,17 @@
-from flask import render_template, redirect, Flask, session, request
+from flask import render_template, redirect, Flask, session, request, jsonify, make_response
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
+import json
 
-from helpers import apology
+# ReturnValues returns a tuple of 8 lists: FordMotorCompany, Facebook, RoyalDutchShell, Tesla, Coinbase, Bitcoin, Ethereum, IndexedFund (all of length 48)
+from LiveValues import ReturnValues
+
+from helpers import apology, getConnection, executeReadQuery, executeWriteQuery
 
 # configure application, use filesystem insted of cookies, make sure responses aren't cached
 app = Flask(__name__)
+db = getConnection("moneys.db")
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
@@ -27,107 +32,130 @@ Session(app)
 
 @app.route('/')
 def hello():
-    hello.user_info = [None]*5
     return render_template("index.html")
 
 
 @app.route("/game/level1", methods=["GET", "POST"])
 def level1():
     if request.method == "GET":
-        answers = []
-        for i in hello.user_info[:3]:
-            if i == None:
-                answers.append("")
-            else:
-                answers.append(i)
-        return render_template("gamelvl1.html", answers=answers, answered=True)
+        return render_template("gamelvl1.html")
 
-    emo = request.form.get("val1")
-    print(emo)
-    mem = request.form.get("val2")
-    print(mem)
-    sui = request.form.get("val3")
-    print(sui)
-    hello.user_info[0] = emo
-    hello.user_info[1] = mem
-    hello.user_info[2] = sui
-    for i in range(len(hello.user_info)):
-        if hello.user_info[i] == '':
-            hello.user_info[i] = None
-    print(hello.user_info)
     return redirect("/game/level2")
 
 
 @app.route("/game/level2")
 def level2():
-    answers = []
-    for i in hello.user_info[3:]:
-        if i == None:
-            answers.append("")
-        else:
-            answers.append(i)
-    return render_template("gamelvl2.html", answers=answers, answered=True)
+    return render_template("gamelvl2.html")
 
 
-@app.route("/processing", methods=["GET", "POST"])
-def processing():
-    if request.method == "GET":
-        return redirect("/game/level1")
-
-    val1 = request.form.get("val1")
-    print(val1)
-    val2 = request.form.get("val2")
-    print(val2)
-    hello.user_info[3] = val1
-    hello.user_info[4] = val2
-    print(hello.user_info)
-    for i in range(len(hello.user_info)):
-        if hello.user_info[i] == '':
-            hello.user_info[i] = None
-    processing.vals = []
-    for i in hello.user_info:
-        if i == "Too much" or i == "Always" or i == "A lot":
-            processing.vals.append(100)
-        elif i == "Enough" or i == "Sometimes":
-            processing.vals.append(50)
-        elif i == "Never" or i == "Not enough":
-            processing.vals.append(0)
-        else:
-            return redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-    print(processing.vals)
-    return redirect("/results")
+@app.route("/game/level3")
+def level3():
+    query = "SELECT invest_obj_id, name, value FROM invests WHERE type = 'stock';"
+    stocks = executeReadQuery(db, query, ())
+    query = "SELECT invest_obj_id, name, value FROM invests WHERE type = 'crypto';"
+    cryptos = executeReadQuery(db, query, ())
+    return render_template("gamelvl3.html", stocks=stocks, cryptos=cryptos)
 
 
-@app.route('/results')
-def results():
-    # 0-emotions, 1-memory, 2-suicidal, 3-sleep, 4-overwhelming
-    diagnosis = []
-    if processing.vals[2] == 100:
-        diagnosis.append("Deep depression")
-    elif processing.vals[2] == 50 and processing.vals[0] == 100:
-        diagnosis.append("Depression")
-    elif processing.vals[2] == 0 and processing.vals[0] == 50:
-        diagnosis.append("Possibly in depression")
-    if processing.vals[1] == 100:
-        diagnosis.append("Suffers from memory loss, further tests needed")
-    if processing.vals[3] == 100:
-        diagnosis.append("Possible hypersomnia")
-    elif processing.vals[3] == 50:
-        diagnosis.append("Normal sleep patterns")
-    elif processing.vals[3] == 0:
-        diagnosis.append("Possibly an insomniac")
-    if processing.vals[4] > 50:
-        diagnosis.append("Stressed out, needs a holiday, or a break at least")
-    if len(diagnosis) == 0:
-        return render_template("results.html", diagnosis=diagnosis, empty=True)
-    return render_template("results.html", diagnosis=diagnosis, empty=False)
+@app.route("/buy", methods=["POST", "GET"])
+def buy():
+    if request.method == "POST":
+        data = request.json
+        user_id = data["userID"]
+        amt = float(data["amt"])
+        symbol = data["stock"]
+        query = "SELECT value FROM invests WHERE invest_obj_id = ?"
+        value = executeReadQuery(db, query, (symbol,))[0][0]
+        cost = value * amt
+        query = "SELECT total_money, wallet FROM users WHERE user_id = ?"
+        moneys = executeReadQuery(db, query, (user_id,))[0]
+        if cost > moneys[1]:
+            return jsonify(status=401, msg="Not enough money")
+        total = moneys[0] - cost
+        wallet = moneys[1] - cost
+        query = "UPDATE users SET total_money = ?, wallet = ? WHERE user_id = ?"
+        if executeWriteQuery(db, query, (total, wallet, user_id,)):
+            query = "INSERT INTO transactions (transactor, type, transactee) VALUES (?, 'b', ?);"
+            if executeWriteQuery(db, query, (user_id, symbol,)):
+                return jsonify(status=200)
+        return jsonify(status=401, msg="something wrong")
+
+
+@app.route("/update", methods=["POST", "GET"])
+def update():
 
 
 @app.route('/entryform')
 def entryform():
     return render_template("entryform.html")
 
-# error handling
+
+@app.route("/get_money", methods=["GET", "POST"])
+def get_money():
+    if request.method == "POST":
+        user_id = request.json
+        query = "SELECT total_money, wallet, bank_money FROM users WHERE user_id = ?;"
+        moneys = executeReadQuery(db, query, (user_id["userID"],))[0]
+        if moneys:
+            return jsonify(status=200, total=moneys[0], wallet=moneys[1], bank=moneys[2])
+        return jsonify(status=401)
+
+
+@app.route("/bank/withdraw", methods=["GET", "POST"])
+def withdraw():
+    if request.method == "POST":
+        details = request.json
+        user_id = details["userID"]
+        operation = details["operation"][0]
+        amt = float(details["amt"])
+        query, vals = "INSERT INTO transactions (transactor, type, transactee) VALUES (?, ?, 'LBLbank');", (
+            user_id, operation,)
+        if executeWriteQuery(db, query, vals):
+            query = "SELECT bank_money, wallet FROM users WHERE user_id = ?"
+            moneys = executeReadQuery(db, query, (user_id,))[0]
+            if amt > moneys[0]:
+                amt = moneys[0]
+            bank = moneys[0] - amt
+            wallet = moneys[1] + amt
+            query = "UPDATE users SET bank_money = ?, wallet = ? WHERE user_id = ?"
+            if executeWriteQuery(db, query, (bank, wallet, user_id,)):
+                return jsonify(status=200, bank=bank, wallet=wallet)
+
+        return jsonify(status=401)
+
+
+@app.route("/bank/deposit", methods=["GET", "POST"])
+def deposit():
+    if request.method == "POST":
+        details = request.json
+        user_id = details["userID"]
+        operation = details["operation"][0]
+        amt = float(details["amt"])
+        query, vals = "INSERT INTO transactions (transactor, type, transactee) VALUES (?, ?, 'LBLbank');", (
+            user_id, operation,)
+        if executeWriteQuery(db, query, vals):
+            query = "SELECT bank_money, wallet FROM users WHERE user_id = ?"
+            moneys = executeReadQuery(db, query, (user_id,))[0]
+            if amt > moneys[1]:
+                amt = moneys[1]
+            bank = moneys[0] + amt
+            wallet = moneys[1] - amt
+            query = "UPDATE users SET bank_money = ?, wallet = ? WHERE user_id = ?"
+            if executeWriteQuery(db, query, (bank, wallet, user_id,)):
+                return jsonify(status=200, bank=bank, wallet=wallet)
+
+        return jsonify(status=401)
+
+
+@app.route("/signinuser", methods=["GET", "POST"])
+def signinuser():
+    if request.method == "POST":
+        user_id = request.json
+        query = "INSERT INTO users (user_id) VALUES (?);"
+        if executeWriteQuery(db, query, (user_id["userID"],)):
+            return jsonify(status=200)
+        else:
+            return jsonify(status=401)
 
 
 def errorhandler(e):

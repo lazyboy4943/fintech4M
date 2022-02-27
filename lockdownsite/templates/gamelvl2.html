@@ -30,68 +30,87 @@
     
     </div>
 
-    <div class="modal" id = "atm">
+    <div class="modal" id = "wallet" >
+    <div style="width: 136px;">
+        Wallet: $
+    </div>
+    </div>
+
+
+    <div class="modal" id = "escalator" >
+        Escalator to level 2 - Stocks & Cryptocurrency exchange! <br><br>
         <div class="options">
-            ATM<br>
-            Welcome to the ATM<br>
-            <br>You can do ATM stuff in the ATM<br>
-            <button class="btn" onclick="showATMinterface();">Use ATM!</button>
-         </div>
+            <button class="btn" onclick="location.href = '/game/level3'">Go to level 2</button>
+        </div>
     </div>
 
-    <div class="modal" id = "banktable">
+    <div class="modal" id="loungetable">
+        Lounge table!<br><br>
+        You can learn a few valuable tips on Stocks and crypto currency! <br><br>
+        Stocks are much less volatile than crypto currency making them safer and more risk free <br>
+        Only invest in crypto currency if you are an expert. It is much more risky than stocks, bonds and ETFs.
+    </div>
+
+
+
+
+    <div class="modal" id="atm">
+        Bank ATM <br><br><br>
         <div class="options">
-            Bank table<br>
-            Welcome to the Bank<br>
-            <br>You can do Bank stuff in the Bank<br>
-            <button class="btn" onclick="senddata();">Talk to bank dude</button>
-         </div>
-    </div>
-
-    <div class="modal" id = "paperonfloor">
-        {% if answered %}
-            {% if answers[0] != "" %}
-                <h1>ANSWERED</h1>
-            {% else %}
-                <p class = 'message'>
-                    Notes: 
-                    The test subject has ____ sleep each day
-                </p>
-                <br>
-                <div class="options">
-                    <button class="btn" onclick="changeval(1, 'Not enough'); changepf();">Not enough</button>
-                    <button class="btn" onclick="changeval(1, 'Enough'); changepf();">Enough</button>
-                    <button class="btn" onclick="changeval(1, 'Too much'); changepf();">Too much</button>
-                </div>
-            {% endif %}
-        {% endif %}
-    </div>
-
-    <div id="ATMinterface">
-        ATM
-    </div>
-
-    <div class="modal" id = "exercise">
-        <div class="options">
-            Note by Dr. Scietinst (the scientist)
-            <br><br>
-            Yes. Lockdowns suck... Anyway here's today's exercise routine you can do at home because the guys couldn't finish building the gym (remember... unexpected lockdown?)
             <br>
-            (Did you know exercise and yoga helps alot with mental health)
-            <br><br>
-            100 Pushups<br>
-            100 Situps<br>
-            100 Squats<br>
-            10 km run<br>
-            <br><br>
-            I heard this gives you superhuman powers. Just don't become fat.<br><br>
+            <br>
 
-            Last updated - 27/4/2069
+            <button class="btn" onclick="showATMinterface();">Use ATM!</button>
+        </div>
+    </div>
+
+    <div class="modal" id = "atmui">
+        <span>Savings: $ <br>               
+            Wallet: $<br>
+        </span>
+        <br>
+        <div class="options">
+            <input placeholder="Enter amount in $" type="number" id="amt"></input>
+        </div>
+        <br>
+        <div class="options">
+
+            <button class="btn" onclick="withdraw();">Withdraw</button>
+            <button class="btn" onclick="deposit();">Deposit</button>
+            
          </div>
-    </div> 
+    </div>
+
+    <div class="modal" id="banktable">
+        Welcome to the Bank!<br>
+        <br>The bank teller is off for the day. <br>Try using the ATM<br>>>><br>
+
+        </div>
+    </div>
+
+
+
+
+
+    <div class="modal" id="newspaper">
+        Newspapers - $1<br><br>
+        The newspapers for today are out of stock. Come back tomorrow.<br>
+        <br><br><br>
+        <div class="options">
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
 
     <div class="modal" id = "door"> 
-        Do you want to go through the door? You'll lose all progress on this level.
+        Exit the Bank
         <div class="options">
             <button class="btn" onclick="location.href = '/game/level1'">Yes. Exit the building</button>
         </div>
@@ -137,11 +156,7 @@
         function senddata() {
             document.querySelector("#info").submit();
         }
-        function showATMinterface() {
-            console.log("show ATM");
-            ATMinterface.style.display = "inline";
-            atm.style.display = "none";
-        }
+
     </script>
     
 {% endblock %}

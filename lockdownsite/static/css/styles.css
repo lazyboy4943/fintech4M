@@ -15,7 +15,7 @@ body {
 }
 
 body {
-  background: #9fa7e4;
+  background: #05141b;
   display: flex;
   align-items: center;
   align-content: center;
@@ -48,7 +48,8 @@ body {
   align-items: center;
   justify-content: center;
   position: absolute;
-  padding-top: 10px;
+  padding-top: 100px;
+  color: black;
 }
 
 .button {
@@ -146,7 +147,7 @@ body {
   background-repeat: no-repeat;
   width: 100%;
   height: 100%;
-  background-image: url("https://cdn.discordapp.com/attachments/858199012003282954/870954154145767434/unknown.png");
+  background-image: url("https://cdn.discordapp.com/attachments/946958398430257193/947332732759998515/unknown.png");
 }
 
 @keyframes slide {
@@ -196,6 +197,23 @@ body {
   margin-bottom: 1.6rem;
   margin-top: 0;
 }
+
+.newspaperbox {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20%;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.6rem 3rem;
+  border: 3px solid black;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
 .btn {
   color: inherit;
   font-family: inherit;

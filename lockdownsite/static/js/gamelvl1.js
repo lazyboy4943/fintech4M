@@ -7,13 +7,45 @@ var subtitle1 = document.getElementById('subtitle1')
 var subtitle2 = document.getElementById('subtitle2')
 var subtitle3 = document.getElementById('subtitle3')
 var subtitle4 = document.getElementById('subtitle4')
+var wallet = document.getElementById("wallet")
+
+function random_id() {
+   var S4 = function() {
+      return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+   };
+   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+}
+
+function get_money() {
+   fetch("/get_money", {
+      method: "POST",
+      body: JSON.stringify({userID: localStorage.getItem("user_id")}),
+      headers: {
+         'Content-Type': 'application/json'
+      },
+   }).then(response => response.json())
+   .then(data => {
+      var status = data.status;
+      if (status == 200) {
+         wallet.innerHTML = `<div style='width: 136px;'>Wallet: $ ${data.wallet}</div>`;
+      }
+      else {
+         alert("not ok")
+      }
+   })
+}
 
 
-console.log('it works 1')
-subtitle1.style.display = 'inline';
-subtitle2.style.display = 'none';
-subtitle3.style.display = 'none';
-subtitle4.style.display = 'none';
+if (!localStorage.getItem("subs_seen")) {
+   subtitle1.style.display = 'inline';
+   subtitle2.style.display = 'none';
+   subtitle3.style.display = 'none';
+   subtitle4.style.display = 'none';
+   wallet.style.display = 'none';
+}
+else {
+   get_money();
+}
 
 function gotosubtitle2() {
    subtitle1.style.display = 'none';
@@ -41,10 +73,30 @@ function closesubtitle4() {
    subtitle2.style.display = 'none';
    subtitle3.style.display = 'none';
    subtitle4.style.display = 'none';
+   wallet.style.display = 'inline';
+   localStorage.setItem("subs_seen", "true");
+   var user_id = random_id()
+   localStorage.setItem("user_id", user_id)
+   var data = {userID: user_id};
+   console.log(data);
+   fetch("/signinuser", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+         'Content-Type': 'application/json'
+      },
+   }).then(response => response.json())
+   .then(data => {
+      var status = data.status;
+      if (status == 200) {
+         alert("all ok");
+         wallet.innerHTML = "<div style='width: 136px;'>Wallet: $ 1500</div>";
+      }
+      else {
+         alert("not ok")
+      }
+   })
 }
-
-
-
 
 function sleep(milliseconds) {
    const date = Date.now();
@@ -126,11 +178,11 @@ const placeCharacter = () => {
    }
 
    // if touching paper show paper
+    var bottomrightxlow = 
+    bottomright.style.display = 'none'
    if (x > rightLimit - 16 && y > bottomLimit-16) {
       bottomright.style.display = 'inline'
-   } else {
-      bottomright.style.display = 'none'
-   }
+   } 
 
    // if touching paper show paper
 

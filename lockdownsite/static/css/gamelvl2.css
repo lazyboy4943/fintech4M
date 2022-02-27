@@ -44,7 +44,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: #353849;
+  background-color: #000;
   position: relative;
   align-content: center;
 }
@@ -237,29 +237,33 @@ body {
   transform: translate(-50%, -50%);
   width: auto;
   display: inline-flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: center;
   padding: 1.6rem 3rem;
   border: 3px solid black;
   border-radius: 5px;
   background: white;
   box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
+  flex-flow: row wrap;
 }
+
 .message {
   font-size: 1.1rem;
   margin-bottom: 1.6rem;
   margin-top: 0;
 }
+
 .btn {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
   background: white;
-  padding: 0.3rem 3.4rem;
+  padding: 0.3rem 3rem;
   border: 3px solid black;
   margin-right: 2.6rem;
   box-shadow: 0 0 0 black;
   transition: all 0.2s;
+  width: fit-content;
 }
 
 .btn:last-child {
@@ -276,16 +280,13 @@ body {
   transform: translate(0, 0);
 }
 
-.options {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+#wallet {
+  top: 145px;
+  left: 145px;
+  width: 250px;
+  height: 250px;
 }
 
-#ATMinterface {
-  width: 80%;
-  height: 70%;
-  background-color: black;
-  color: green;
-  display: none;
+.options {
+  width: 50px;
 }

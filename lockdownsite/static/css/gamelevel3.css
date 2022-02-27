@@ -13,7 +13,7 @@ body {
     --pixel-size: 4px;
   }
 }
-@media (min-width: 10px) {
+@media (min-width: 1000px) {
   :root {
     --pixel-size: 6px;
   }
@@ -44,17 +44,17 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #61ddf7;
+  background-color: #353849;
   position: relative;
   align-content: center;
 }
 
 .map {
   image-rendering: pixelated;
-  background-image: url("https://cdn.discordapp.com/attachments/858199012003282954/870939738046087168/output-onlinepngtools_8.png");
+  background-image: url("https://cdn.discordapp.com/attachments/946966569664253982/947290186348363776/pokecenterlevel2.png");
   background-size: 100%;
-  width: calc(26 * var(--grid-cell));
-  height: calc(17 * var(--grid-cell));
+  width: calc(16 * var(--grid-cell));
+  height: calc(10 * var(--grid-cell));
   position: relative;
   align-content: center;
 }
@@ -237,108 +237,14 @@ body {
   transform: translate(-50%, -50%);
   width: auto;
   display: inline-flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: center;
   padding: 1.6rem 3rem;
   border: 3px solid black;
   border-radius: 5px;
   background: white;
   box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
-}
-
-#subtitleoptions {
-  padding-left: 80%;
-}
-
-#subtitle1 {
-  position: absolute;
-  left: 50%;
-  top: 87.5%;
-  transform: translate(-50%, -50%);
-  width: 70%;
-  height: 15%;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.6rem 3rem;
-  border: 3px solid black;
-  border-radius: 5px;
-  background: white;
-  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
-}
-
-#subtitle2 {
-  position: absolute;
-  left: 50%;
-  top: 87.5%;
-  transform: translate(-50%, -50%);
-  width: 70%;
-  height: 15%;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.6rem 3rem;
-  border: 3px solid black;
-  border-radius: 5px;
-  background: white;
-  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
-}
-
-#subtitle3 {
-  position: absolute;
-  left: 50%;
-  top: 87.5%;
-  transform: translate(-50%, -50%);
-  width: 70%;
-  height: 15%;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.6rem 3rem;
-  border: 3px solid black;
-  border-radius: 5px;
-  background: white;
-  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
-}
-
-#subtitle4 {
-  position: absolute;
-  left: 50%;
-  top: 87.5%;
-  transform: translate(-50%, -50%);
-  width: 70%;
-  height: 15%;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.6rem 3rem;
-  border: 3px solid black;
-  border-radius: 5px;
-  background: white;
-  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
-}
-
-#wallet {
-  top: 145px;
-  left: 145px;
-  width: 250px;
-  height: 250px;
-}
-
-.newspaperbox {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 20%;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1.6rem 3rem;
-  border: 3px solid black;
-  border-radius: 5px;
-  background: white;
-  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
+  flex-flow: row wrap;
 }
 
 .message {
@@ -346,16 +252,18 @@ body {
   margin-bottom: 1.6rem;
   margin-top: 0;
 }
+
 .btn {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
   background: white;
-  padding: 0.3rem 3.4rem;
+  padding: 0.3rem 3rem;
   border: 3px solid black;
   margin-right: 2.6rem;
   box-shadow: 0 0 0 black;
   transition: all 0.2s;
+  width: fit-content;
 }
 
 .btn:last-child {
@@ -372,8 +280,13 @@ body {
   transform: translate(0, 0);
 }
 
+#wallet {
+  top: 145px;
+  left: 145px;
+  width: 250px;
+  height: 250px;
+}
+
 .options {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  width: 50px;
 }

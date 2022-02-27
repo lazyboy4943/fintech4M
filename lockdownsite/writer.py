@@ -1,4 +1,7 @@
 import sqlite3
+import os
+import requests
+import urllib.parse
 
 
 def getConnection(db):
@@ -24,13 +27,61 @@ def executeReadQuery(connection, query, placeholders):
 
 
 db = getConnection("moneys.db")
-
-query1 = "CREATE TABLE users (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, total_money REAL DEFAULT 100 NOT NULL, credits INTEGER DEFAULT 0 NOT NULL);"
+"""
+query1 = "CREATE TABLE users (user_id PRIMARY KEY NOT NULL, total_money REAL DEFAULT 1500 NOT NULL, wallet REAL DEFAULT 1500 NOT NULL, bank_money REAL DEFAULT 0, credits INTEGER DEFAULT 0 NOT NULL);"
 query2 = "CREATE TABLE invests (invest_obj_id varchar(20) PRIMARY KEY NOT NULL, name varchar(200) NOT NULL, value REAL NOT NULL, type varchar(9) NOT NULL);"
 query3 = "CREATE TABLE owned_invests (investor INTEGER NOT NULL, investment varchar(20) NOT NULL, num_invests INTEGER NOT NULL DEFAULT 1, FOREIGN KEY(investor) REFERENCES users(user_id), FOREIGN KEY(investment) REFERENCES invests(invest_obj_id));"
-query4 = "CREATE TABLE transactions (transactor INTEGER NOT NULL, type varchar(1) NOT NULL, transactee varchar(20) NOT NULL, time DATETIME DEFAULT CURRENT_TIMESTAMP);"
+query4 = "CREATE TABLE transactions (transactor TEXT NOT NULL, type varchar(1) NOT NULL, transactee varchar(20) NOT NULL, time DATETIME DEFAULT CURRENT_TIMESTAMP);"
+"""
 
-executeWriteQuery(db, query1, ())
-executeWriteQuery(db, query2, ())
-executeWriteQuery(db, query3, ())
-executeWriteQuery(db, query4, ())
+
+def lookup(symbol):
+    """Look up quote for symbol."""
+
+    # Contact API
+    try:
+        api_key = "pk_c2137d40546d4c38b372cee41fd6d99f"
+        response = requests.get(
+            f"https://cloud.iexapis.com/stable/stock/{urllib.parse.quote_plus(symbol)}/quote?token={api_key}")
+        response.raise_for_status()
+    except requests.RequestException:
+        return None
+
+    # Parse response
+    try:
+        quote = response.json()
+        return {
+            "name": quote["companyName"],
+            "price": float(quote["latestPrice"]),
+            "symbol": quote["symbol"]
+        }
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+"""
+pairings = [
+    ["M", "Macy's Inc (Hotel chain)"],
+    ["GOOGL", "Alphabet Inc - Class A (Google)"],
+    ["VAL", "Valaris Ltd (oil)"],
+    ["SHEL", "Royal Dutch Petroleum"],
+    ["FB", "Meta Platforms Inc (Facebook)"]
+]
+
+for stuff in pairings:
+    query = "UPDATE invests SET name = '{stuff[1]}' WHERE invest_obj_id = '{stuff[0]}';"
+    executeWriteQuery(db, query, ())
+"""
+"""
+data = [
+    ("FLC", "FlameCoin(TM)", 556.34, "crypto",),
+    ("CHC", "CheepCoin", 1090.2, "crypto",),
+    ("BLT", "BlotChing", 381.68, "crypto",),
+    ("LBLbank", "Liabilites Bank(TM)", 1000000000, "bank",),
+    ("IDXF", "Index Fund", 0, "index fund",)
+]
+
+for stuff in data:
+    query = "INSERT INTO invests VALUES (?, ?, ?, ?);"
+    executeWriteQuery(db, query, stuff)
+"""

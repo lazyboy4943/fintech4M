@@ -2,26 +2,22 @@ var character = document.querySelector(".character");
 var map = document.querySelector(".map");
 var atm = document.getElementById('atm');
 var camera = document.querySelector(".camera");
-var exercise = document.getElementById('exercise');
-var overwhelm = document.getElementById('overwhelm');
-var door = document.getElementById('door');
-var banktable = document.getElementById('banktable');
-var atmui = document.getElementById("atmui");
-var newspaper = document.getElementById("newspaper");
-var wallet = document.getElementById('wallet');
 var escalator = document.getElementById('escalator');
-var atminfo = document.querySelector("span")
-var loungetable = document.getElementById('loungetable');
+var stocktable = document.getElementById('stocktable');
+var cryptotable = document.getElementById('cryptotable');
+var stocksUIview = document.getElementById('stocksUIview');
+var cryptoUIview = document.getElementById('cryptoUIview');
+var cryptoUIbs = document.getElementById('cryptoUIbs');
+const user_id = localStorage.getItem("user_id")
+if (!user_id) {
+   window.location("/game/level1")
+}
+
 
 function get_money() {
-   if (!localStorage.getItem("user_id")) {
-      localStorage.clear();
-      window.location = "/game/level1";
-   }
-   const user_id = localStorage.getItem("user_id");
    fetch("/get_money", {
       method: "POST",
-      body: JSON.stringify({userID: user_id}),
+      body: JSON.stringify({userID: localStorage.getItem("user_id")}),
       headers: {
          'Content-Type': 'application/json'
       },
@@ -30,7 +26,6 @@ function get_money() {
       var status = data.status;
       if (status == 200) {
          wallet.innerHTML = `<div style='width: 136px;'>Wallet: $ ${data.wallet}</div>`;
-         atminfo.innerHTML = `Savings: $ ${data.bank}<br>Wallet: $ ${data.wallet}<br>`;
       }
       else {
          alert("not ok")
@@ -38,11 +33,53 @@ function get_money() {
    })
 }
 
-get_money();
+//if touching the stocks table open stocks
+var stocktablexhigh = 66;
+var stocktablexlow = 19;
+var stocktableyhigh = 50;
+
+//functions for buying and selling stocks
+function buystock(stock) {
+   amt = document.querySelector(`#${stock}`).value;
+   fetch("/buy", {
+      method: "POST",
+      body: JSON.stringify({
+         stock: stock,
+         amt: amt,
+         userID: user_id
+      }),
+      headers: {
+         "Content-type": "application/json",
+      }
+   }).then(response => response.json())
+   .then(data => {
+      // wait
+   })
+}
+
+function sellstock(stock) {
+// wait
+}
+   
+
+setInterval(() => {
+   fetch("/update", {
+      method: "POST",
+      body: JSON.stringify({
+         msg: "update"
+      }),
+      headers: {
+         "Content-type": "application/json",
+      }
+   }).then(repsonse => response.json())
+   .then(data => console(data))
+}, 30000);
+
+
 
 //start in the middle of the map
-var x = 109;
-var y = 105;
+var x = 177;
+var y = 83;
 var held_directions = []; //State of which arrow keys we are holding down
 var speed = 1; //How fast the character moves in pixels per frame
 
@@ -52,14 +89,18 @@ function sleep(milliseconds) {
    do {
      currentDate = Date.now();
    } while (currentDate - date < milliseconds);
- }
-
-function changeow() {
-   var bottomright = document.getElementById('overwhelm');
-   bottomright.innerHTML = "<h1>ANSWERED</h1>"
 }
 
 
+function showviewstocks() {
+   stocksUIview.style.display = 'inline';
+   stocktable.style.display = 'none';
+}
+
+function showcryptoview() {
+   cryptotable.style.display = 'none';
+   cryptoUIview.style.display = 'inline';
+}
 
 
 const placeCharacter = () => {
@@ -88,47 +129,50 @@ const placeCharacter = () => {
    
    //Limits (gives the illusion of walls)
    var leftLimit = -3;
-   var rightLimit = 226;
-   var topLimit = 20;
-   var bottomLimit = 118;
-
-   // if touching door then go outside
-   var buildinglocxhigh = 125;
-   var buildinglocxlow = 101;
-   var buildinglocy = 111;
-   if (x < buildinglocxhigh && y >= buildinglocy && x > buildinglocxlow) {
-      door.style.display = 'inline'
-   } else {
-      door.style.display = 'none'
-      
-      //document.querySelector("#info").submit();
-      //sleep(2000)
-   }
-
-   // if touching atm show 
-   var paperlocxlow = (16 *6)+8;
-   var paperlocxhigh = 191;
-   var paperlocy = -8 + 40;
-   if (x < paperlocxhigh && x > paperlocxlow && y <= paperlocy) {
-      atm.style.display = 'inline'
-   } else {
-      atm.style.display = 'none'
-      atmui.style.display = 'none'
-   }
+   var rightLimit = 206;
+   var topLimit = 47;
+   var bottomLimit = 134;
 
 
+   //if touching escalator go to next floor
+   var escalatorxlow = 185;
+   var escalatorylow = 68;
+   var escalatoryhigh = 98;
 
-   
+   escalator.style.display = 'none';
+   if (x > escalatorxlow) {
+      if (y < escalatoryhigh && y > escalatorylow) {
+         escalator.style.display = 'inline';
+      }
+    }
+
+    
+
+    //if touching the cryptotable then open crypto ui
+    var cryptotablexhigh = 145;
+    var cryptotablexlow = 80;
+    var cryptotableyhigh = 50;
 
 
+    if (y < cryptotableyhigh && x > cryptotablexlow && x < cryptotablexhigh) {
 
-   // if near gym then go to gym
+      cryptotable.style.display = 'inline'
+      console.log('at cryptotable');
 
-   if (x > rightLimit - 2 ) {
-      overwhelm.style.display = 'inline'
-   } else {
-      overwhelm.style.display = 'none'
-   }
+      } else {
+      cryptotable.style.display = 'none';
+      cryptoUIview.style.display = 'none';
+        
+    }
+
+    if (x > 19 && x < 66 && y < 50) {
+        stocktable.style.display = 'inline';
+    } else {
+        stocksUIview.style.display = 'none';
+        stocktable.style.display = 'none';
+    }
+    
+    
 
 
    // if touching table then dont touch table and show table ui
@@ -159,52 +203,13 @@ const placeCharacter = () => {
    }
    
    if (y < tableyhigh + 2 && x < tablexhigh && x > tablexlow) {
-      banktable.style.display = 'inline';
+      //banktable.style.display = 'inline';
    } else {
-      banktable.style.display = 'none';
-    }
-
-    //if near lounge table show information
-    var loungetablexhigh = 198;
-    var loungetablexlow = 169;
-    var loungetableyhigh = 105;
-    var loungetableylow = 75;
-
-    loungetable.style.display = 'none';
-    if (x > loungetablexlow && x < loungetablexhigh) {
-        if (y > loungetableylow && y < loungetableyhigh) {
-            loungetable.style.display = 'inline';
-        }
-        else {
-            loungetable.style.display = 'none';
-        }
-    }
-   
-   //if touching escalator go to next floor
-   var escalatorxhigh = 23;
-   var escalatorylow = 70;
-   var escalatoryhigh = 98;
-
-   escalator.style.display = 'none';
-   if (x < escalatorxhigh) {
-      if (y < escalatoryhigh && y > escalatorylow) {
-         escalator.style.display = 'inline';
-      }
+      //banktable.style.display = 'none';
    }
-
-   //if touching newspapers then prompt to buy one
-    
-   var newspapersxlow = 27;
-   var newspapersxhigh = 53;
    
-   newspaper.style.display = 'none'
-   if (y < 21 ) {
-      if (x < newspapersxhigh) {
-         if (x > newspapersxlow) {
-            newspaper.style.display = 'inline'
-         }
-      }
-   }
+
+
 
 
 
@@ -309,41 +314,22 @@ function withdraw() {
    var amt = document.getElementById("amt").value;
    fetch("/bank/withdraw", {
       method: "POST",
-      body: JSON.stringify({operation: 'withdraw', amt: amt, userID: localStorage.getItem("user_id")}),
+      body: JSON.stringify({operation: withdraw, amt: amt, userID: localStorage.getItem("user_id")}),
       headers: {
          "Content-type": "application/json"
       },
    }).then(response => response.json())
-   .then(data => {
-      if (data.status == 401) {
-         alert("not ok");
-      }
-      else {
-         atminfo.innerHTML = `Savings: $ ${data.bank}<br>Wallet: $ ${data.wallet}<br>`;
-         wallet.innerHTML = `<div style='width: 136px;'>Wallet: $ ${data.wallet}</div>`;
-         alert("all ok");
-      }
-   })
+   .then(data => console.log(data))
 }
 
 function deposit() {
    var amt = document.getElementById("amt").value;
    fetch("/bank/deposit", {
       method: "POST",
-      body: JSON.stringify({operation: 'deposit', amt: amt, userID: localStorage.getItem("user_id")}),
+      body: JSON.stringify({operation: "deposit", amt: amt}),
       headers: {
          "Content-type": "application/json"
       },
    }).then(response => response.json())
-   .then(data => {
-      console.log(data);
-      if (data.status == 401) {
-         alert("not ok");
-      }
-      else {
-         atminfo.innerHTML = `Savings: $ ${data.bank}<br>Wallet: $ ${data.wallet}<br>`;
-         wallet.innerHTML = `<div style='width: 136px;'>Wallet: $ ${data.wallet}</div>`;
-         alert("all ok");
-      }
-   })
+   .then(data => console.log(data))
 }

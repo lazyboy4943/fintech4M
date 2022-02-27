@@ -2,8 +2,10 @@ from flask import render_template
 import sqlite3
 
 # we have to apologize for errors
+
+
 def apology(message, code):
-    #Escape special characters: https://github.com/jacebrowning/memegen#special-characters
+    # Escape special characters: https://github.com/jacebrowning/memegen#special-characters
     def escape(s):
         for old, new in [("-", "--"), (" ", "-"), ("_", "__"), ("?", "~q"), ("%", "~p"), ("#", "~h"), ("/", "~s"), ("\"", "''")]:
             s = s.replace(old, new)
