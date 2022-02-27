@@ -83,6 +83,18 @@ def buy():
 
 @app.route("/update", methods=["POST", "GET"])
 def update():
+    query = "SELECT value, name FROM invests WHERE type = 'stock' OR type ='crypto'"
+    data = executeReadQuery(db, query, ())[6:]
+    for d in data:
+        newVal = ReturnValues(d[0], d[1])
+        query = "UPDATE invests SET value = ? WHERE name = ?"
+        if executeWriteQuery(db, query, (newVal, d[1],)):
+            pass
+    query = "SELECT invest_obj_id, name, value FROM invests WHERE type = 'stock';"
+    stocks = executeReadQuery(db, query, ())
+    query = "SELECT invest_obj_id, name, value FROM invests WHERE type = 'crypto';"
+    cryptos = executeReadQuery(db, query, ())
+    return jsonify(status=200, cryptos=cryptos, stock=stocks)
 
 
 @app.route('/entryform')

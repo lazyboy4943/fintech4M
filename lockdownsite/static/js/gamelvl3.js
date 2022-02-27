@@ -7,7 +7,6 @@ var stocktable = document.getElementById('stocktable');
 var cryptotable = document.getElementById('cryptotable');
 var stocksUIview = document.getElementById('stocksUIview');
 var cryptoUIview = document.getElementById('cryptoUIview');
-var cryptoUIbs = document.getElementById('cryptoUIbs');
 const user_id = localStorage.getItem("user_id")
 if (!user_id) {
    window.location("/game/level1")
@@ -71,8 +70,58 @@ setInterval(() => {
       headers: {
          "Content-type": "application/json",
       }
-   }).then(repsonse => response.json())
-   .then(data => console(data))
+   }).then(response => response.json())
+   .then(data => {
+      if (data.status !== 200) {
+         alert("not ok");
+      }
+      else {
+         var inside = "";
+         data.stocks.forEach((stock) => {
+            var div = `<div class="stock-card" style="width: 30%; margin: 5px;">
+                              <h5>${stock[0]}</h5>
+                              <h3>${stock[1]}.</h3>
+                              <h4>Cost of one share: $ ${stock[2]}</h4>
+                              <br>
+                              <div class="options">
+                                 <input placeholder="no. of shares" type="number" min="0" id="${stock[0]}"><br>
+                              </div>
+                              <br>
+                              <div class="options">
+                                 <button class="btn" onclick="buystock('${stock[0]}')">Buy</button>
+                              </div>
+                              <br>
+                              <div class="options">
+                                 <button class="btn" onclick="sellstock('${stock[0]}')">Sell</button>
+                              </div>
+                        </div>`
+            inside += div;
+         })
+         stocksUIview.innerHTML = inside;
+         inside = "";
+         data.cryptos.forEach((stock) => {
+            var div = `<div class="stock-card" style="width: 30%; margin: 5px;">
+                              <h5>${stock[0]}</h5>
+                              <h3>${stock[1]}.</h3>
+                              <h4>Cost of one share: $ ${stock[2]}</h4>
+                              <br>
+                              <div class="options">
+                                 <input placeholder="no. of shares" type="number" min="0" id="${stock[0]}"><br>
+                              </div>
+                              <br>
+                              <div class="options">
+                                 <button class="btn" onclick="buystock('${stock[0]}')">Buy</button>
+                              </div>
+                              <br>
+                              <div class="options">
+                                 <button class="btn" onclick="sellstock('${stock[0]}')">Sell</button>
+                              </div>
+                        </div>`
+            inside += div;
+         })
+         cryptoUIview.innerHTML = inside;
+      }
+   })
 }, 30000);
 
 
