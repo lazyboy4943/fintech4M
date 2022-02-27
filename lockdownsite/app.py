@@ -5,9 +5,9 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 import json
 
 # ReturnValues returns a tuple of 8 lists: FordMotorCompany, Facebook, RoyalDutchShell, Tesla, Coinbase, Bitcoin, Ethereum, IndexedFund (all of length 48)
-from LiveValues import ReturnValues
+from LiveValues import ReturnValues, randomize_val
 
-from helpers import apology, getConnection, executeReadQuery, executeWriteQuery
+from helpers import apology, getConnection, executeReadQuery, executeWriteQuery, lookup
 
 # configure application, use filesystem insted of cookies, make sure responses aren't cached
 app = Flask(__name__)
@@ -81,20 +81,44 @@ def buy():
         return jsonify(status=401, msg="something wrong")
 
 
+@app.route("/apply_interest", methods=["POST", "GET"])
+def apply_interest():
+    if request.method == "POST":
+        user_id = request.json["userID"]
+        query, uid = "SELECT bank_money, total_money FROM users WHERE user_id = ?", (
+            user_id,)
+        moneys = executeReadQuery(db, query, uid)[0]
+        added_money = moneys[0] * 0.008
+        bank = round((moneys[0] + added_money), 2)
+        total = round((moneys[1] + added_money), 2)
+        query = "UPDATE users SET bank_money = ?, total_money = ? WHERE user_id = ?"
+        vals = (bank, total, user_id,)
+        if executeWriteQuery(db, query, vals):
+            return jsonify(status=200)
+        return jsonify(status=401)
+
+
 @app.route("/update", methods=["POST", "GET"])
 def update():
-    query = "SELECT value, name FROM invests WHERE type = 'stock' OR type ='crypto'"
-    data = executeReadQuery(db, query, ())[6:]
-    for d in data:
-        newVal = ReturnValues(d[0], d[1])
-        query = "UPDATE invests SET value = ? WHERE name = ?"
-        if executeWriteQuery(db, query, (newVal, d[1],)):
+    query = "SELECT value, type, invest_obj_id FROM invests WHERE type = 'stock' OR type ='crypto'"
+    data = executeReadQuery(db, query, ())
+    for d in data[6:]:
+        newVal = randomize_val(d[0], d[1])
+        query = "UPDATE invests SET value = ? WHERE invest_obj_id = ?"
+        if executeWriteQuery(db, query, (newVal, d[2],)):
             pass
+
+    for d in data[:6]:
+        newVal = lookup(d[2])["price"]
+        query = "UPDATE invests SET value = ? WHERE invest_obj_id = ?"
+        if executeWriteQuery(db, query, (newVal, d[2],)):
+            pass
+
     query = "SELECT invest_obj_id, name, value FROM invests WHERE type = 'stock';"
     stocks = executeReadQuery(db, query, ())
     query = "SELECT invest_obj_id, name, value FROM invests WHERE type = 'crypto';"
     cryptos = executeReadQuery(db, query, ())
-    return jsonify(status=200, cryptos=cryptos, stock=stocks)
+    return jsonify(status=200, cryptos=cryptos, stocks=stocks)
 
 
 @app.route('/entryform')

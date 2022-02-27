@@ -9,14 +9,15 @@ var stocksUIview = document.getElementById('stocksUIview');
 var cryptoUIview = document.getElementById('cryptoUIview');
 const user_id = localStorage.getItem("user_id")
 if (!user_id) {
-   window.location("/game/level1")
+   localStorage.clear();
+   window.location("/game/level1");
 }
 
 
 function get_money() {
    fetch("/get_money", {
       method: "POST",
-      body: JSON.stringify({userID: localStorage.getItem("user_id")}),
+      body: JSON.stringify({userID: user_id}),
       headers: {
          'Content-Type': 'application/json'
       },
@@ -31,6 +32,23 @@ function get_money() {
       }
    })
 }
+
+setInterval(() => {
+   fetch("/apply_interest", {
+      method: "POST",
+      body: JSON.stringify({
+         userID: user_id
+      }),
+      headers: {
+         "Content-type": "application/json",
+      }
+   }).then(response => response.json())
+   .then(data => {
+      if (data.status == 200) {
+         get_money();
+      }
+   })
+}, 120000);
 
 //if touching the stocks table open stocks
 var stocktablexhigh = 66;
@@ -52,7 +70,7 @@ function buystock(stock) {
       }
    }).then(response => response.json())
    .then(data => {
-      // wait
+      get_money();
    })
 }
 
@@ -76,12 +94,13 @@ setInterval(() => {
          alert("not ok");
       }
       else {
+         console.log(data);
          var inside = "";
          data.stocks.forEach((stock) => {
             var div = `<div class="stock-card" style="width: 30%; margin: 5px;">
                               <h5>${stock[0]}</h5>
                               <h3>${stock[1]}.</h3>
-                              <h4>Cost of one share: $ ${stock[2]}</h4>
+                              <h5>Cost of one share: $ ${stock[2]}</h5>
                               <br>
                               <div class="options">
                                  <input placeholder="no. of shares" type="number" min="0" id="${stock[0]}"><br>
@@ -103,7 +122,7 @@ setInterval(() => {
             var div = `<div class="stock-card" style="width: 30%; margin: 5px;">
                               <h5>${stock[0]}</h5>
                               <h3>${stock[1]}.</h3>
-                              <h4>Cost of one share: $ ${stock[2]}</h4>
+                              <h5>Cost of one share: $ ${stock[2]}</h5>
                               <br>
                               <div class="options">
                                  <input placeholder="no. of shares" type="number" min="0" id="${stock[0]}"><br>
@@ -206,7 +225,6 @@ const placeCharacter = () => {
     if (y < cryptotableyhigh && x > cryptotablexlow && x < cryptotablexhigh) {
 
       cryptotable.style.display = 'inline'
-      console.log('at cryptotable');
 
       } else {
       cryptotable.style.display = 'none';

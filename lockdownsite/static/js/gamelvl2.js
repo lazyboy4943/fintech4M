@@ -12,13 +12,13 @@ var wallet = document.getElementById('wallet');
 var escalator = document.getElementById('escalator');
 var atminfo = document.querySelector("span")
 var loungetable = document.getElementById('loungetable');
+user_id = localStorage.getItem("user_id");
+if (!user_id) {
+   localStorage.clear();
+   window.location = "/game/level1";
+}
 
 function get_money() {
-   if (!localStorage.getItem("user_id")) {
-      localStorage.clear();
-      window.location = "/game/level1";
-   }
-   const user_id = localStorage.getItem("user_id");
    fetch("/get_money", {
       method: "POST",
       body: JSON.stringify({userID: user_id}),
@@ -37,6 +37,23 @@ function get_money() {
       }
    })
 }
+
+setInterval(() => {
+   fetch("/apply_interest", {
+      method: "POST",
+      body: JSON.stringify({
+         userID: user_id
+      }),
+      headers: {
+         "Content-type": "application/json",
+      }
+   }).then(response => response.json())
+   .then(data => {
+      if (data.status == 200) {
+         get_money();
+      }
+   })
+}, 120000);
 
 get_money();
 

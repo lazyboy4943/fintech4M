@@ -59,29 +59,14 @@ def lookup(symbol):
         return None
 
 
-"""
-pairings = [
-    ["M", "Macy's Inc (Hotel chain)"],
-    ["GOOGL", "Alphabet Inc - Class A (Google)"],
-    ["VAL", "Valaris Ltd (oil)"],
-    ["SHEL", "Royal Dutch Petroleum"],
-    ["FB", "Meta Platforms Inc (Facebook)"]
-]
+# USERS
+# | user_id | total_money | wallet | bank_money | credits |
 
-for stuff in pairings:
-    query = "UPDATE invests SET name = '{stuff[1]}' WHERE invest_obj_id = '{stuff[0]}';"
-    executeWriteQuery(db, query, ())
-"""
-"""
-data = [
-    ("FLC", "FlameCoin(TM)", 556.34, "crypto",),
-    ("CHC", "CheepCoin", 1090.2, "crypto",),
-    ("BLT", "BlotChing", 381.68, "crypto",),
-    ("LBLbank", "Liabilites Bank(TM)", 1000000000, "bank",),
-    ("IDXF", "Index Fund", 0, "index fund",)
-]
+# INVESTS
+# | invest_obj_id | name | value | type |
 
-for stuff in data:
-    query = "INSERT INTO invests VALUES (?, ?, ?, ?);"
-    executeWriteQuery(db, query, stuff)
-"""
+# OWNED_INVESTS
+# | investor | investment | num_invests |
+
+# TRANSACTIONS
+# | transactor | type | transactee | time |

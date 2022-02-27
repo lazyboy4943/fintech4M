@@ -94,9 +94,22 @@ def ReturnValues(ValInit, Stock):
     values = (FordMotorCompany, Facebook, RoyalDutchShell,
               Tesla, Coinbase, Bitcoin, Ethereum, IndexedFund)
 
-    Stocks = ['FordMotorCompany', 'Facebook', 'RoyalDutchShell',
-              'Tesla', 'Coinbase', 'Bitcoin', 'Ethereum', 'IndexedFund']
+    Stocks = ['Ford Motor Co.', 'Meta Platforms Inc - Class A', 'Shell PLC - ADR (Representing)',
+              'Tesla Inc', 'Coinbase Global Inc - Class A', 'FlameCoin(TM)', 'CheepCoin', 'BlotChing']
 
     ind = Stocks.index(Stock)
 
     return (values[ind][values[ind].index(ValInit) + 1])
+
+
+random.seed(1)
+
+
+def randomize_val(old_val, type):
+    if type == "stock":
+        factor = round(random.uniform(-4, 4), 3)
+    elif type == "crypto":
+        factor = round(random.uniform(-15, 10), 3)
+    x = random.choice([1, 1, 1, 1, 1, -1, -1, -1, -1, -1])
+    new_val = old_val + (old_val * factor/100)
+    return round(new_val, 2)
